@@ -321,6 +321,22 @@
       flex-shrink: 0;
     }
 
+    .zone-choice {
+      display:flex; align-items:center; gap:12px; min-height:72px;
+      padding:12px; border:1.5px solid var(--border); border-radius:14px;
+      background:var(--surface); color:var(--text); cursor:pointer; text-align:left;
+    }
+    .zone-choice.selected { border:2px solid var(--text); background:var(--surface-muted); }
+    .zone-choice .zone-swatch { width:24px; height:24px; border-radius:8px; }
+    .zone-choice strong { display:block; font-size:16px; }
+    .zone-choice small { display:block; color:var(--text-secondary); font-size:12px; margin-top:2px; }
+    .campus-map { width:100%; display:block; border-radius:14px; border:1px solid var(--border); }
+    .map-caption { color:var(--text-secondary); font-size:12px; margin-top:8px; }
+    .auth-backdrop { position:fixed; inset:0; z-index:110; background:rgba(31,30,27,.55); display:flex; align-items:center; justify-content:center; padding:18px; }
+    .auth-card { width:100%; max-width:380px; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:22px; box-shadow:0 18px 50px rgba(0,0,0,.2); }
+    .auth-card input { width:100%; margin-top:6px; }
+    .auth-error { color:#963E1E; font-size:13px; margin-top:10px; }
+
     .text-input {
       width: 100%;
       background: var(--surface);
@@ -499,7 +515,7 @@
 
     <!-- ROLE PICKER -->
     <main id="roleSelectView">
-      <div class="kicker">CAMPUS PARKING GUIDANCE</div>
+      <div class="kicker">P07 · CAMPUS PARKING GUIDANCE</div>
       <h1 class="hero-title">Choose your space.<br/>Start simply.</h1>
       <p class="hero-sub">Select whether you are parking on campus or updating lot availability.</p>
 
@@ -520,7 +536,7 @@
         </div>
       </button>
 
-      <button class="role-choice" onclick="selectRole('attendant')">
+      <button class="role-choice" onclick="openAttendantLogin()">
         <div class="art-frame" style="margin-bottom: 4px;">
           <img src="./public/images/attendant-keys.png" alt="Minimalist 3D clay parking attendant keys and directional board badge" />
         </div>
@@ -555,7 +571,7 @@
             YOUR SAVED SPOT
           </div>
           <div id="homeSavedSummary" style="font-size:17px; font-weight:600;">No spot saved · Tap to set</div>
-          <div id="homeSavedSub" style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Save your lot and colour zone after parking</div>
+          <div id="homeSavedSub" style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Save your lot and section after parking</div>
         </div>
 
         <div class="art-frame">
@@ -595,29 +611,28 @@
           <span><strong>Manually updated by parking staff.</strong> No automatic sensors are used. Check each lot's update time before heading in.</span>
         </div>
 
+        <div class="card">
+          <div class="kicker">LPU CAMPUS MAP</div>
+          <img class="campus-map" src="./public/images/lpu-campus-illustration.png" alt="Illustrated overview of the LPU campus layout" />
+          <p class="map-caption">Illustrated campus overview for orientation. Use the lot names in Parkwise and follow campus signs for exact parking locations.</p>
+        </div>
         <div id="riderLotList"></div>
       </div>
 
       <div id="rider-scan" class="tab-pane hidden">
-        <h2 class="section-title">Open a zone QR link</h2>
-        <p class="section-sub">Scanning a physical zone sign link opens that section preselected.</p>
-
-        <div class="art-frame">
-          <img src="./public/images/zone-tokens.png" alt="Connected A1 to B2 colour zone tokens" />
-        </div>
-
+        <h2 class="section-title">Choose your parking section</h2>
+        <p class="section-sub">Just remember the code and colour shown on the sign near your vehicle.</p>
         <div class="card">
-          <div class="kicker">MANUAL SECTION FALLBACK</div>
-          <p style="font-size:13.5px; color:var(--text-secondary); margin-bottom:12px;">
-            Physical QR signs are planned for lot poles. Select your zone marker below to prefill your parking card right now:
-          </p>
+          <div class="kicker">FOUR SIMPLE SECTION MARKERS</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">The same four markers are used in each supported parking lot.</p>
           <div class="chip-grid" id="scanZoneQuickGrid"></div>
         </div>
+        <div class="disclosure"><span>Tip: Match the code on the parking sign. The colour is an extra visual reminder, not a separate location.</span></div>
       </div>
 
       <div id="rider-saved" class="tab-pane hidden">
         <h2 class="section-title">Where did I park?</h2>
-        <p class="section-sub">Save your lot and colour zone once, retrieve it after class.</p>
+        <p class="section-sub">Save the lot and section code you see on the sign.</p>
 
         <div id="activeSavedCard" class="card-lavender hidden"></div>
 
@@ -783,9 +798,36 @@
     }
 
     function selectRole(role) {
-      state.role = role;
-      state.tab = role === 'rider' ? 'home' : 'desk';
+      if (role === 'attendant') { openAttendantLogin(); return; }
+      state.role = 'rider';
+      state.tab = 'home';
       renderAll();
+    }
+
+    function openAttendantLogin() {
+      document.getElementById('attendantLoginModal').classList.remove('hidden');
+      document.getElementById('attendantLoginError').classList.add('hidden');
+      document.getElementById('attendantUid').value = '';
+      document.getElementById('attendantPassword').value = '';
+      setTimeout(() => document.getElementById('attendantUid').focus(), 0);
+    }
+
+    function closeAttendantLogin() {
+      document.getElementById('attendantLoginModal').classList.add('hidden');
+    }
+
+    function submitAttendantLogin() {
+      const uid = document.getElementById('attendantUid').value.trim();
+      const password = document.getElementById('attendantPassword').value;
+      if (uid === '123' && password === 'ABC') {
+        closeAttendantLogin();
+        state.role = 'attendant';
+        state.tab = 'desk';
+        renderAll();
+        showToast('Staff access granted');
+      } else {
+        document.getElementById('attendantLoginError').classList.remove('hidden');
+      }
     }
 
     function resetRole() {
@@ -999,16 +1041,16 @@
       `).join('');
 
       document.getElementById('zoneChoiceGrid').innerHTML = ZONES.map(z => `
-        <button type="button" class="chip-btn ${state.formZone === z.id ? 'selected' : ''}" onclick="setFormZone('${z.id}')">
+        <button type="button" class="zone-choice ${state.formZone === z.id ? 'selected' : ''}" onclick="setFormZone('${z.id}')" aria-pressed="${state.formZone === z.id}">
           <span class="zone-swatch" style="background:${z.hex};"></span>
-          ${z.label} · ${z.colorName}
+          <span><strong>${z.id}</strong><small>${z.colorName} section</small></span>
         </button>
       `).join('');
 
       document.getElementById('scanZoneQuickGrid').innerHTML = ZONES.map(z => `
-        <button type="button" class="chip-btn" onclick="selectZonePrefill('${z.id}')">
+        <button type="button" class="zone-choice" onclick="selectZonePrefill('${z.id}')">
           <span class="zone-swatch" style="background:${z.hex};"></span>
-          Open ${z.label} (${z.colorName})
+          <span><strong>${z.id}</strong><small>${z.colorName} · Tap to select</small></span>
         </button>
       `).join('');
 
@@ -1033,7 +1075,7 @@
 
       if (!state.savedSpot) {
         homeSum.textContent = 'No spot saved · Tap to set';
-        homeSub.textContent = 'Save your lot and colour zone after parking';
+        homeSub.textContent = 'Save your lot and section after parking';
         card.classList.add('hidden');
         return;
       }
