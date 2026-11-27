@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#F5F2EB" />
+  <title>Where Did I Park? • Campus Parking Guidance (P07)</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F5F2EB;
+      --surface: #FAF8F4;
+      --surface-muted: #EFECE4;
+      --surface-lavender: #EAE7F2;
+      --border: #E3DEC9;
+      --text: #1F1E1B;
+      --text-secondary: #68645B;
+      --text-muted: #8E897E;
+      --terracotta: #D96B43;
+      --terracotta-bg: #F7E5DD;
+      --sage: #5E7A56;
+      --sage-bg: #E6EDE3;
+      --amber: #C9822B;
+      --amber-bg: #F8EEDB;
+      --violet: #7D6FA3;
+      --violet-bg: #ECE8F5;
+      --blue: #4B799E;
+      --blue-bg: #E3ECF3;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 84px;
+    }
+
+    h1, h2, h3, .brand {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: -0.025em;
+    }
+
+    .app-shell {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 18px 18px 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 2px 18px;
+    }
+    .brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+    .role-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .role-pill:hover { border-color: #C7BFA9; color: var(--text); }
+
+    /* Desktop navigation — hidden on mobile so there is NEVER duplicate top+bottom nav */
+    .desktop-nav {
+      display: none;
+      gap: 6px;
+      background: var(--surface-muted);
+      padding: 4px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .desktop-nav button {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+    .desktop-nav button.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(31, 30, 27, 0.06);
+    }
+
+    @media (min-width: 768px) {
+      body { padding-bottom: 32px; }
+      .desktop-nav { display: flex; }
+      .bottom-nav { display: none !important; }
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 22px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .card-lavender {
+      background: var(--surface-lavender);
+      border: 1px solid #DCD7EA;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .kicker {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Gamma Minimalist Editorial Art Cards */
+    .art-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      background: #ECE7DC;
+    }
+    .art-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .role-choice {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .role-choice:hover {
+      border-color: #BFB59E;
+      transform: translateY(-1px);
+    }
+    .role-choice-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .role-choice h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .role-choice p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .status-Available { background: var(--sage-bg); color: #3D5437; }
+    .status-Available .badge-dot { background: var(--sage); }
+    .status-Filling { background: var(--amber-bg); color: #8A5414; }
+    .status-Filling .badge-dot { background: var(--amber); }
+    .status-Full { background: var(--terracotta-bg); color: #963E1E; }
+    .status-Full .badge-dot { background: var(--terracotta); }
+
+    .lot-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .lot-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .lot-meta {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .freshness-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--surface-muted);
+      padding: 4px 9px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .disclosure {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: var(--surface-muted);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin: 14px 0 8px;
+    }
+    .chip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .chip-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      transition: 0.12s ease;
+    }
+    .chip-btn.selected {
+      border-color: var(--text);
+      background: var(--surface-muted);
+      font-weight: 600;
+    }
+    .zone-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .text-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 13px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+    }
+    .text-input:focus { outline: none; border-color: var(--text); }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--text);
+      color: #FAF8F4;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { opacity: 0.92; }
+
+    .btn-secondary {
+      background: var(--surface-muted);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-danger-outline {
+      background: var(--terracotta-bg);
+      color: #8E3718;
+      border: 1px solid #E5B9A8;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-seg {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .seg-btn {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      border-radius: 10px;
+      padding: 8px 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .seg-btn.active-Available { background: var(--sage-bg); border-color: var(--sage); color: #2F422A; }
+    .seg-btn.active-Filling { background: var(--amber-bg); border-color: var(--amber); color: #78480E; }
+    .seg-btn.active-Full { background: var(--terracotta-bg); border-color: var(--terracotta); color: #8A3517; }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(250, 248, 244, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 6px 12px;
+      z-index: 40;
+    }
+    .nav-item {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      min-width: 64px;
+    }
+    .nav-item.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .nav-item.active .nav-icon-wrap {
+      background: var(--surface-lavender);
+      color: var(--text);
+    }
+    .nav-icon-wrap {
+      padding: 5px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(31, 30, 27, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      max-width: 390px;
+      width: 100%;
+      box-shadow: 0 18px 40px rgba(31, 30, 27, 0.16);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .modal-actions button { flex: 1; justify-content: center; }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: #FAF8F4;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 120;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <span class="brand">parkwise</span>
+      <button id="switchRoleBtn" class="role-pill hidden" onclick="resetRole()" aria-label="Switch role">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l4 4-4 4"/><path d="M20 7H4"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h16"/></svg>
+        <span id="roleBadgeText">Switch role</span>
+      </button>
+    </header>
+
+    <nav id="desktopNav" class="desktop-nav hidden" aria-label="Primary navigation"></nav>
+
+    <!-- ROLE PICKER -->
+    <main id="roleSelectView">
+      <div class="kicker">P07 · CAMPUS PARKING GUIDANCE</div>
+      <h1 class="hero-title">Choose your space.<br/>Start simply.</h1>
+      <p class="hero-sub">Select whether you are parking on campus or updating lot availability.</p>
+
+      <button class="role-choice" onclick="selectRole('rider')">
+        <div class="art-frame" style="margin-bottom: 4px;">
+          <img src="./public/images/campus-pathway.png" alt="Minimalist 3D clay campus parking pathway arch with scooter and car" />
+        </div>
+        <div class="role-choice-header">
+          <div>
+            <div class="kicker" style="margin-bottom: 2px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/><path d="M9 17.5h6"/><path d="M14 6h3l2 5.5"/><path d="M6.5 15l2.5-5h4l1.5 5"/></svg>
+              FOR RIDERS &amp; DRIVERS
+            </div>
+            <h3>I'm parking</h3>
+            <p>Check Building 34, 56, BH1 &amp; BH4 status and save your zone.</p>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </button>
+
+      <button class="role-choice" onclick="selectRole('attendant')">
+        <div class="art-frame" style="margin-bottom: 4px;">
+          <img src="./public/images/attendant-keys.png" alt="Minimalist 3D clay parking attendant keys and directional board badge" />
+        </div>
+        <div class="role-choice-header">
+          <div>
+            <div class="kicker" style="margin-bottom: 2px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg>
+              FOR LOT STAFF
+            </div>
+            <h3>I'm updating a lot</h3>
+            <p>Set Available, Filling, or Full status and manage A1–B2 zones.</p>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </button>
+
+      <div class="disclosure">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span><strong>Concept D · Team 14:</strong> No automatic sensors or live GPS tracking. Lot statuses are manually updated by campus attendants, and saved spots stay on this device.</span>
+      </div>
+    </main>
+
+    <!-- RIDER WORKSPACE -->
+    <section id="riderWorkspace" class="hidden">
+      <div id="rider-home" class="tab-pane">
+        <h1 class="hero-title">Your campus parking.<br/>Your pace.</h1>
+        <p class="hero-sub">Simple guidance for Building 34, 56, BH1, and BH4.</p>
+
+        <div class="card-lavender" onclick="switchTab('saved')" style="cursor:pointer;">
+          <div class="kicker">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-5.33-6-10a6 6 0 1 1 12 0c0 4.67-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg>
+            YOUR SAVED SPOT
+          </div>
+          <div id="homeSavedSummary" style="font-size:17px; font-weight:600;">No spot saved · Tap to set</div>
+          <div id="homeSavedSub" style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Save your lot and colour zone after parking</div>
+        </div>
+
+        <div class="art-frame">
+          <img src="./public/images/campus-pathway.png" alt="Calm campus parking pathway illustration" />
+        </div>
+
+        <h2 class="section-title">A little clarity, today</h2>
+        <p class="section-sub">Pick one useful next step.</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
+          <button class="card" style="text-align:left; cursor:pointer; margin:0;" onclick="switchTab('lots')">
+            <div class="kicker">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>
+              LOTS
+            </div>
+            <div style="font-weight:600; font-size:15px;">Check Lot Board</div>
+            <div id="homeBoardPulse" style="font-size:12.5px; color:var(--text-secondary); margin-top:4px;">3 Available · 1 Filling</div>
+          </button>
+
+          <button class="card" style="text-align:left; cursor:pointer; margin:0;" onclick="switchTab('scan')">
+            <div class="kicker">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M18 18h3v3h-3z"/></svg>
+              ZONE LINK
+            </div>
+            <div style="font-weight:600; font-size:15px;">Zone A1–B2</div>
+            <div style="font-size:12.5px; color:var(--text-secondary); margin-top:4px;">Prefill section tag</div>
+          </button>
+        </div>
+      </div>
+
+      <div id="rider-lots" class="tab-pane hidden">
+        <h2 class="section-title">Lot availability</h2>
+        <p class="section-sub">Approximate status across campus parking zones.</p>
+
+        <div class="disclosure">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span><strong>Manually updated by parking staff.</strong> No automatic sensors are used. Check each lot's update time before heading in.</span>
+        </div>
+
+        <div id="riderLotList"></div>
+      </div>
+
+      <div id="rider-scan" class="tab-pane hidden">
+        <h2 class="section-title">Open a zone QR link</h2>
+        <p class="section-sub">Scanning a physical zone sign link opens that section preselected.</p>
+
+        <div class="art-frame">
+          <img src="./public/images/zone-tokens.png" alt="Connected A1 to B2 colour zone tokens" />
+        </div>
+
+        <div class="card">
+          <div class="kicker">MANUAL SECTION FALLBACK</div>
+          <p style="font-size:13.5px; color:var(--text-secondary); margin-bottom:12px;">
+            Physical QR signs are planned for lot poles. Select your zone marker below to prefill your parking card right now:
+          </p>
+          <div class="chip-grid" id="scanZoneQuickGrid"></div>
+        </div>
+      </div>
+
+      <div id="rider-saved" class="tab-pane hidden">
+        <h2 class="section-title">Where did I park?</h2>
+        <p class="section-sub">Save your lot and colour zone once, retrieve it after class.</p>
+
+        <div id="activeSavedCard" class="card-lavender hidden"></div>
+
+        <div class="card">
+          <label class="field-label" style="margin-top:0;">1. Choose Campus Lot</label>
+          <div class="chip-grid" id="lotChoiceGrid"></div>
+
+          <label class="field-label">2. Section Marker (Label + Colour)</label>
+          <div class="chip-grid" id="zoneChoiceGrid"></div>
+
+          <label class="field-label">3. Vehicle Type</label>
+          <div class="chip-grid">
+            <button type="button" class="chip-btn selected" id="veh-two" onclick="setVehicle('Two-Wheeler')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/><path d="M9 17.5h6"/><path d="M14 6h3l2 5.5"/><path d="M6.5 15l2.5-5h4l1.5 5"/></svg>
+              Two-Wheeler
+            </button>
+            <button type="button" class="chip-btn" id="veh-car" onclick="setVehicle('Car / Permitted')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14v-5l-2-4H7l-2 4v5z"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+              Car / Permitted
+            </button>
+          </div>
+
+          <label class="field-label" for="landmarkInput">4. Optional Landmark</label>
+          <input id="landmarkInput" class="text-input" type="text" placeholder="e.g., Near Block 34 stairs or pole B1" />
+
+          <button type="button" class="btn-primary" onclick="saveSpot()">Save Parking Location</button>
+        </div>
+
+        <div class="disclosure">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Saved location stays locally on this device/browser and does not sync across devices.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATTENDANT WORKSPACE -->
+    <section id="attendantWorkspace" class="hidden">
+      <div id="attendant-desk" class="tab-pane">
+        <h1 class="hero-title">Attendant desk.<br/>Clear updates.</h1>
+        <p class="hero-sub">Manual status control for Building 34, 56, BH1, and BH4.</p>
+
+        <div class="card-lavender" onclick="switchTab('update')" style="cursor:pointer;">
+          <div class="kicker">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg>
+            BOARD SUMMARY
+          </div>
+          <div id="deskBoardSummary" style="font-size:17px; font-weight:600;">3 Available · 1 Filling · 0 Full</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Tap to open the manual status board</div>
+        </div>
+
+        <div class="art-frame">
+          <img src="./public/images/attendant-keys.png" alt="Attendant keys and lot status board illustration" />
+        </div>
+
+        <div class="card">
+          <div class="kicker">SHIFT ACTIONS</div>
+          <h3 style="font-size:16px; margin-bottom:4px;">Morning Reset</h3>
+          <p style="font-size:13.5px; color:var(--text-secondary); margin-bottom:12px;">
+            Set all four campus lots back to <strong>Available</strong> at the start of a shift.
+          </p>
+          <button type="button" class="btn-danger-outline" onclick="openResetModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Reset All Lots
+          </button>
+        </div>
+      </div>
+
+      <div id="attendant-update" class="tab-pane hidden">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+          <h2 class="section-title">Update board</h2>
+          <button type="button" class="btn-danger-outline" style="padding:7px 11px; font-size:12.5px;" onclick="openResetModal()">Reset All</button>
+        </div>
+        <p class="section-sub">Tap a status to update what riders see right now.</p>
+
+        <div id="attendantLotList"></div>
+      </div>
+
+      <div id="attendant-signs" class="tab-pane hidden">
+        <h2 class="section-title">Zone signs</h2>
+        <p class="section-sub">Active A1–B2 section markers and QR deep links for riders.</p>
+
+        <div class="art-frame">
+          <img src="./public/images/zone-tokens.png" alt="Connected A1 to B2 parking zone tokens" />
+        </div>
+
+        <div id="attendantZoneList"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Single Bottom Navigation (Mobile only) -->
+  <nav id="bottomNav" class="bottom-nav hidden" aria-label="Mobile navigation"></nav>
+
+  <!-- Reset All Confirmation Modal -->
+  <div id="resetModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="modal-card">
+      <div class="kicker" style="color:#8E3718;">CONFIRM SHIFT ACTION</div>
+      <h3 id="resetModalTitle" style="font-size:19px; margin-bottom:8px;">Reset all four lot statuses to Available?</h3>
+      <p style="font-size:14px; color:var(--text-secondary);">
+        This will update <strong>Building 34</strong>, <strong>Building 56</strong>, <strong>BH1</strong>, and <strong>BH4</strong> to Available and record the current reset time.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeResetModal()">Cancel</button>
+        <button type="button" class="btn-primary" style="margin-top:0; background:var(--terracotta);" onclick="confirmResetAll()">Confirm reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastBanner" class="toast hidden" role="status"></div>
+
+  <script>
+    const LOTS = [
+      { id: 'b34', name: 'Building 34', area: 'CSE & Academic Block · Two-Wheeler & Permitted' },
+      { id: 'b56', name: 'Building 56', area: 'Engineering & Labs · High Peak Turnover' },
+      { id: 'bh1', name: 'BH1 Parking', area: 'Boys Hostel 1 · Resident & Evening Zone' },
+      { id: 'bh4', name: 'BH4 Parking', area: 'Boys Hostel 4 · Overflow & Resident Zone' }
+    ];
+
+    const ZONES = [
+      { id: 'A1', label: 'A1', colorName: 'Blue', hex: '#4B799E', bg: '#E3ECF3' },
+      { id: 'A2', label: 'A2', colorName: 'Sage', hex: '#5E7A56', bg: '#E6EDE3' },
+      { id: 'B1', label: 'B1', colorName: 'Amber', hex: '#C9822B', bg: '#F8EEDB' },
+      { id: 'B2', label: 'B2', colorName: 'Violet', hex: '#7D6FA3', bg: '#ECE8F5' }
+    ];
+
+    const DEFAULT_STATUSES = {
+      b34: { status: 'Available', updatedAt: null },
+      b56: { status: 'Filling', updatedAt: null },
+      bh1: { status: 'Available', updatedAt: null },
+      bh4: { status: 'Available', updatedAt: null }
+    };
+
+    let state = {
+      role: null,
+      tab: 'home',
+      statuses: JSON.parse(localStorage.getItem('pw_statuses_v2') || 'null') || DEFAULT_STATUSES,
+      savedSpot: JSON.parse(localStorage.getItem('pw_saved_v2') || 'null'),
+      formLot: 'b34',
+      formZone: 'A1',
+      formVehicle: 'Two-Wheeler'
+    };
+
+    function formatTime(iso) {
+      if (!iso) return 'No update recorded';
+      const d = new Date(iso);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toastBanner');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => el.classList.add('hidden'), 2600);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const qrZone = params.get('zone');
+    if (qrZone && ZONES.some(z => z.id === qrZone.toUpperCase())) {
+      state.formZone = qrZone.toUpperCase();
+      state.role = 'rider';
+      state.tab = 'saved';
+    }
+
+    function selectRole(role) {
+      state.role = role;
+      state.tab = role === 'rider' ? 'home' : 'desk';
+      renderAll();
+    }
+
+    function resetRole() {
+      state.role = null;
+      renderAll();
+    }
+
+    function switchTab(tab) {
+      state.tab = tab;
+      renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setLotStatus(lotId, status) {
+      state.statuses[lotId] = { status, updatedAt: new Date().toISOString() };
+      localStorage.setItem('pw_statuses_v2', JSON.stringify(state.statuses));
+      renderAll();
+      const lot = LOTS.find(l => l.id === lotId);
+      showToast(`${lot.name} marked ${status}`);
+    }
+
+    function openResetModal() {
+      document.getElementById('resetModal').classList.remove('hidden');
+    }
+
+    function closeResetModal() {
+      document.getElementById('resetModal').classList.add('hidden');
+    }
+
+    function confirmResetAll() {
+      const now = new Date().toISOString();
+      LOTS.forEach(l => {
+        state.statuses[l.id] = { status: 'Available', updatedAt: now };
+      });
+      localStorage.setItem('pw_statuses_v2', JSON.stringify(state.statuses));
+      closeResetModal();
+      renderAll();
+      showToast('All four campus lots reset to Available');
+    }
+
+    function selectZonePrefill(zoneId) {
+      state.formZone = zoneId;
+      state.tab = 'saved';
+      renderAll();
+      showToast(`Zone ${zoneId} prefilled`);
+    }
+
+    function setFormLot(lotId) {
+      state.formLot = lotId;
+      renderSavedForm();
+    }
+
+    function setFormZone(zoneId) {
+      state.formZone = zoneId;
+      renderSavedForm();
+    }
+
+    function setVehicle(veh) {
+      state.formVehicle = veh;
+      document.getElementById('veh-two').classList.toggle('selected', veh === 'Two-Wheeler');
+      document.getElementById('veh-car').classList.toggle('selected', veh === 'Car / Permitted');
+    }
+
+    function saveSpot() {
+      const lotObj = LOTS.find(l => l.id === state.formLot);
+      const zoneObj = ZONES.find(z => z.id === state.formZone);
+      const landmark = document.getElementById('landmarkInput').value.trim();
+      state.savedSpot = {
+        lotName: lotObj.name,
+        zoneId: zoneObj.id,
+        colorName: zoneObj.colorName,
+        hex: zoneObj.hex,
+        vehicle: state.formVehicle,
+        landmark,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem('pw_saved_v2', JSON.stringify(state.savedSpot));
+      renderAll();
+      showToast('Parking spot saved on this device');
+    }
+
+    function clearSavedSpot() {
+      state.savedSpot = null;
+      localStorage.removeItem('pw_saved_v2');
+      renderAll();
+      showToast('Saved spot cleared');
+    }
+
+    function copySavedNote() {
+      if (!state.savedSpot) return;
+      const s = state.savedSpot;
+      const note = `Parked at ${s.lotName} · Zone ${s.zoneId} (${s.colorName}) · ${s.vehicle}${s.landmark ? ' · ' + s.landmark : ''} · Saved at ${formatTime(s.savedAt)}`;
+      navigator.clipboard?.writeText(note);
+      showToast('Parking note copied');
+    }
+
+    function getCountsText() {
+      let av = 0, fi = 0, fu = 0;
+      LOTS.forEach(l => {
+        const st = state.statuses[l.id]?.status || 'Available';
+        if (st === 'Available') av++;
+        else if (st === 'Filling') fi++;
+        else fu++;
+      });
+      return `${av} Available · ${fi} Filling · ${fu} Full`;
+    }
+
+    function renderNav() {
+      const topRoleBtn = document.getElementById('switchRoleBtn');
+      const dNav = document.getElementById('desktopNav');
+      const bNav = document.getElementById('bottomNav');
+
+      if (!state.role) {
+        topRoleBtn.classList.add('hidden');
+        dNav.classList.add('hidden');
+        bNav.classList.add('hidden');
+        return;
+      }
+
+      topRoleBtn.classList.remove('hidden');
+      dNav.classList.remove('hidden');
+      bNav.classList.remove('hidden');
+      document.getElementById('roleBadgeText').textContent = state.role === 'rider' ? 'Rider · Switch' : 'Staff · Switch';
+
+      const items = state.role === 'rider'
+        ? [
+            { id: 'home', label: 'Home', icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>' },
+            { id: 'lots', label: 'Lots', icon: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>' },
+            { id: 'scan', label: 'Zones', icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h7v7h-7z"/>' },
+            { id: 'saved', label: 'Saved', icon: '<path d="M12 21s-6-5.33-6-10a6 6 0 1 1 12 0c0 4.67-6 10-6 10z"/><circle cx="12" cy="11" r="2"/>' }
+          ]
+        : [
+            { id: 'desk', label: 'Desk', icon: '<circle cx="7.5" cy="15.5" r="4.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/>' },
+            { id: 'update', label: 'Board', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10"/><path d="M7 14h6"/>' },
+            { id: 'signs', label: 'Signs', icon: '<path d="M12 2v20"/><rect x="5" y="4" width="14" height="7" rx="1.5"/>' }
+          ];
+
+      dNav.innerHTML = items.map(it =>
+        `<button class="${state.tab === it.id ? 'active' : ''}" onclick="switchTab('${it.id}')">${it.label}</button>`
+      ).join('');
+
+      bNav.innerHTML = items.map(it =>
+        `<button class="nav-item ${state.tab === it.id ? 'active' : ''}" onclick="switchTab('${it.id}')">
+          <div class="nav-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.icon}</svg>
+          </div>
+          <span>${it.label}</span>
+        </button>`
+      ).join('');
+    }
+
+    function renderLots() {
+      const counts = getCountsText();
+      document.getElementById('homeBoardPulse').textContent = counts;
+      document.getElementById('deskBoardSummary').textContent = counts;
+
+      document.getElementById('riderLotList').innerHTML = LOTS.map(lot => {
+        const info = state.statuses[lot.id] || { status: 'Available', updatedAt: null };
+        const timeStr = info.updatedAt ? `Updated ${formatTime(info.updatedAt)}` : 'No update recorded';
+        return `
+          <div class="card">
+            <div class="lot-row">
+              <div>
+                <div class="lot-name">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+                  ${lot.name}
+                </div>
+                <div class="lot-meta">${lot.area}</div>
+                <div class="freshness-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${timeStr}
+                </div>
+              </div>
+              <span class="badge status-${info.status}">
+                <span class="badge-dot"></span>${info.status}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('attendantLotList').innerHTML = LOTS.map(lot => {
+        const info = state.statuses[lot.id] || { status: 'Available', updatedAt: null };
+        const timeStr = info.updatedAt ? `Updated ${formatTime(info.updatedAt)}` : 'No update recorded';
+        return `
+          <div class="card">
+            <div class="lot-row">
+              <div>
+                <div class="lot-name">${lot.name}</div>
+                <div class="lot-meta">${timeStr}</div>
+              </div>
+              <span class="badge status-${info.status}">
+                <span class="badge-dot"></span>${info.status}
+              </span>
+            </div>
+            <div class="status-seg">
+              ${['Available', 'Filling', 'Full'].map(st => `
+                <button type="button" class="seg-btn ${info.status === st ? 'active-' + st : ''}" onclick="setLotStatus('${lot.id}', '${st}')">${st}</button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSavedForm() {
+      document.getElementById('lotChoiceGrid').innerHTML = LOTS.map(lot => `
+        <button type="button" class="chip-btn ${state.formLot === lot.id ? 'selected' : ''}" onclick="setFormLot('${lot.id}')">
+          ${lot.name}
+        </button>
+      `).join('');
+
+      document.getElementById('zoneChoiceGrid').innerHTML = ZONES.map(z => `
+        <button type="button" class="chip-btn ${state.formZone === z.id ? 'selected' : ''}" onclick="setFormZone('${z.id}')">
+          <span class="zone-swatch" style="background:${z.hex};"></span>
+          ${z.label} · ${z.colorName}
+        </button>
+      `).join('');
+
+      document.getElementById('scanZoneQuickGrid').innerHTML = ZONES.map(z => `
+        <button type="button" class="chip-btn" onclick="selectZonePrefill('${z.id}')">
+          <span class="zone-swatch" style="background:${z.hex};"></span>
+          Open ${z.label} (${z.colorName})
+        </button>
+      `).join('');
+
+      document.getElementById('attendantZoneList').innerHTML = ZONES.map(z => `
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="zone-swatch" style="width:16px; height:16px; background:${z.hex};"></span>
+            <div>
+              <div style="font-weight:600; font-size:15px;">Section ${z.label} · ${z.colorName}</div>
+              <div style="font-size:12.5px; color:var(--text-secondary);">Deep link: ?zone=${z.id}</div>
+            </div>
+          </div>
+          <span class="badge" style="background:${z.bg}; color:var(--text);">${z.label}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderSavedCard() {
+      const homeSum = document.getElementById('homeSavedSummary');
+      const homeSub = document.getElementById('homeSavedSub');
+      const card = document.getElementById('activeSavedCard');
+
+      if (!state.savedSpot) {
+        homeSum.textContent = 'No spot saved · Tap to set';
+        homeSub.textContent = 'Save your lot and colour zone after parking';
+        card.classList.add('hidden');
+        return;
+      }
+
+      const s = state.savedSpot;
+      homeSum.textContent = `${s.lotName} · Zone ${s.zoneId} (${s.colorName})`;
+      homeSub.textContent = `Saved at ${formatTime(s.savedAt)}${s.landmark ? ' · ' + s.landmark : ''}`;
+
+      card.classList.remove('hidden');
+      card.innerHTML = `
+        <div class="kicker">CURRENTLY SAVED</div>
+        <div style="font-size:19px; font-weight:600; display:flex; align-items:center; gap:8px;">
+          <span class="zone-swatch" style="width:13px; height:13px; background:${s.hex};"></span>
+          ${s.lotName} · ${s.zoneId} (${s.colorName})
+        </div>
+        <div style="font-size:13.5px; color:var(--text-secondary); margin-top:4px;">
+          ${s.vehicle}${s.landmark ? ' · ' + s.landmark : ''} · <strong>Saved at ${formatTime(s.savedAt)}</strong>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button type="button" class="btn-secondary" onclick="copySavedNote()">Copy Note</button>
+          <button type="button" class="btn-secondary" onclick="clearSavedSpot()">Picked Up / Clear</button>
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      renderNav();
+      renderLots();
+      renderSavedForm();
+      renderSavedCard();
+
+      const roleSelect = document.getElementById('roleSelectView');
+      const riderWs = document.getElementById('riderWorkspace');
+      const attWs = document.getElementById('attendantWorkspace');
+
+      if (!state.role) {
+        roleSelect.classList.remove('hidden');
+        riderWs.classList.add('hidden');
+        attWs.classList.add('hidden');
+        return;
+      }
+
+      roleSelect.classList.add('hidden');
+      if (state.role === 'rider') {
+        riderWs.classList.remove('hidden');
+        attWs.classList.add('hidden');
+        ['home', 'lots', 'scan', 'saved'].forEach(t => {
+          document.getElementById('rider-' + t).classList.toggle('hidden', state.tab !== t);
+        });
+      } else {
+        riderWs.classList.add('hidden');
+        attWs.classList.remove('hidden');
+        ['desk', 'update', 'signs'].forEach(t => {
+          document.getElementById('attendant-' + t).classList.toggle('hidden', state.tab !== t);
+        });
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
